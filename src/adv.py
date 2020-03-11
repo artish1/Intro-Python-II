@@ -1,6 +1,7 @@
 from room import Room
 from player import Player
 import textwrap
+import os
 
 # Declare all the rooms
 
@@ -61,7 +62,20 @@ player = Player("Mark", room["outside"])
 # Print an error message if the movement isn't allowed.
 #
 # If the user enters "q", quit the game.
+invalid_room_error = False
+invalid_command_error = False
 while True:
+    os.system("clear")
+
+    if invalid_command_error == True:
+        print("Invalid Command. Available commands: ")
+        print("n: Go North \ns: Go South \nw: Go West \ne: Go East \nq: Quit")
+        invalid_command_error = False
+
+    if invalid_room_error == True:
+        print("#### There is no room in that direction ####")
+        invalid_room_error = False
+
     current_room = player.current_room
 
     # Print current room details
@@ -75,28 +89,27 @@ while True:
     command = input("Please enter your command:   ")
     if command == "n":
         if current_room.n_to is None:
-            print("###### There is no North room of the current room #######")
+            invalid_room_error = True
         else:
             player.current_room = current_room.n_to
     elif command == "s":
         if current_room.s_to is None:
-            print("###### There is no South room of the current room #######")
+            invalid_room_error = True
         else:
             player.current_room = current_room.s_to
     elif command == "w":
         if current_room.w_to is None:
-            print("###### There is no West room of the current room #######")
+            invalid_room_error = True
         else:
             player.current_room = current_room.w_to
     elif command == "e":
         if current_room.e_to is None:
-            print("###### There is no East room of the current room #######")
+            invalid_room_error = True
         else:
             player.current_room = current_room.e_to
     elif command == "q":
         print("Goodbye")
         break
     else:
-        print("Invalid Command. Available commands: ")
-        print("n: Go North \ns: Go South \nw: Go West \ne: Go East \nq: Quit")
+        invalid_command_error = True
 
