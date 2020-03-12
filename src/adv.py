@@ -2,6 +2,7 @@ from room import Room
 from player import Player
 import textwrap
 import os
+from item import Food, Weapon
 
 # Declare all the rooms
 
@@ -42,6 +43,17 @@ room["overlook"].s_to = room["foyer"]
 room["narrow"].w_to = room["foyer"]
 room["narrow"].n_to = room["treasure"]
 room["treasure"].s_to = room["narrow"]
+
+# Add items to rooms
+sword = Weapon("Basic Sword", "A rusty old sword for basic combat", 5)
+bow = Weapon("Basic Bow", "An old used bow for basic combat", 3)
+
+tomato = Food("Tomato", "A red circular fruit", 3)
+potato = Food("Potato", "A stud", 2)
+
+room["foyer"].items.append(sword)
+room["overlook"].items.extend([potato, tomato])
+room["treasure"].items.append(bow)
 
 #
 # Main
@@ -85,8 +97,10 @@ while True:
         indented_words = textwrap.indent(text=line, prefix="* ")
         print(indented_words)
 
+    current_room.print_items()
     # Wait for user input
     command = input("Please enter your command:   ")
+    cmdList = command.split(",")
     if command == "n":
         if current_room.n_to is None:
             invalid_room_error = True
