@@ -10,3 +10,11 @@ class Player:
         print("Your items: ")
         for item in self.items:
             print(item.name)
+
+    def drop_item(self, item_name):
+        for item in self.items:
+            if item_name == item.name:
+                self.items.remove(item)
+
+    def add_item(self, item):
+        self.items.append(item)

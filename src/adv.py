@@ -45,8 +45,8 @@ room["narrow"].n_to = room["treasure"]
 room["treasure"].s_to = room["narrow"]
 
 # Add items to rooms
-sword = Weapon("Basic Sword", "A rusty old sword for basic combat", 5)
-bow = Weapon("Basic Bow", "An old used bow for basic combat", 3)
+sword = Weapon("Sword", "A rusty old sword for basic combat", 5)
+bow = Weapon("Bow", "An old used bow for basic combat", 3)
 
 tomato = Food("Tomato", "A red circular fruit", 3)
 potato = Food("Potato", "A stud", 2)
@@ -76,8 +76,9 @@ player = Player("Mark", room["outside"])
 # If the user enters "q", quit the game.
 invalid_room_error = False
 invalid_command_error = False
+print_inventory = False
 while True:
-    os.system("clear")
+    # os.system("clear")
 
     if invalid_command_error == True:
         print("Invalid Command. Available commands: ")
@@ -98,32 +99,57 @@ while True:
         print(indented_words)
 
     current_room.print_items()
+
+    if print_inventory:
+        player.print_inventory()
+        print_inventory = False
+
     # Wait for user input
     command = input("Please enter your command:   ")
-    cmdList = command.split(",")
-    if command == "n":
-        if current_room.n_to is None:
-            invalid_room_error = True
+    cmdList = command.split(" ")
+    command = cmdList[0]
+    if len(cmdList) == 1:
+        if command == "n":
+            if current_room.n_to is None:
+                invalid_room_error = True
+            else:
+                player.current_room = current_room.n_to
+        elif command == "s":
+            if current_room.s_to is None:
+                invalid_room_error = True
+            else:
+                player.current_room = current_room.s_to
+        elif command == "w":
+            if current_room.w_to is None:
+                invalid_room_error = True
+            else:
+                player.current_room = current_room.w_to
+        elif command == "e":
+            if current_room.e_to is None:
+                invalid_room_error = True
+            else:
+                player.current_room = current_room.e_to
+        elif command == "i":
+            print_inventory = True
+        elif command == "q":
+            print("Goodbye")
+            break
         else:
-            player.current_room = current_room.n_to
-    elif command == "s":
-        if current_room.s_to is None:
-            invalid_room_error = True
-        else:
-            player.current_room = current_room.s_to
-    elif command == "w":
-        if current_room.w_to is None:
-            invalid_room_error = True
-        else:
-            player.current_room = current_room.w_to
-    elif command == "e":
-        if current_room.e_to is None:
-            invalid_room_error = True
-        else:
-            player.current_room = current_room.e_to
-    elif command == "q":
-        print("Goodbye")
-        break
-    else:
-        invalid_command_error = True
+            invalid_command_error = True
+    elif len(cmdList) > 1:
+        if cmdList[0] == "get":
+            item_name = cmdList[1]
+            found = False
+            for item in current_room.items:
+                if item_name == item.name:
+                    player.add_item(item)
+                    current_room.items.remove(item)
+                    print(f"Picked up {item.name}")
+                    found = True
+                    break
+            if not found:
+                print("There was no item found")
+        if cmdList[0] == "drop":
+            item_name = cmdList[1]
+            player.drop_item(item_name)
 
